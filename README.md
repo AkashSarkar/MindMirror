@@ -5,7 +5,7 @@ A complete neural network-based AI assistant built from the ground up to underst
 ## 🎯 Project Goals
 
 - **Deep Understanding**: Build AI from scratch to understand every component
-- **Educational Journey**: Progress from single neurons to transformer-like architectures  
+- **Educational Journey**: Progress from single neurons to transformer-like architectures
 - **Practical Application**: Create a working AI assistant you can actually use
 - **Foundation Building**: Prepare for advanced AI concepts and modern architectures
 
@@ -14,7 +14,7 @@ A complete neural network-based AI assistant built from the ground up to underst
 ```
 MindMirror/
 ├── lib/                    # Core neural network library
-├── example/               # Step-by-step learning examples  
+├── example/               # Step-by-step learning examples
 ├── src/                   # Your working AI assistant
 └── notebooks/             # Jupyter exploration notebooks
 ```
@@ -22,6 +22,7 @@ MindMirror/
 ## 🚀 Quick Start
 
 ### 📚 Learn the Fundamentals
+
 ```bash
 # Start with understanding a single neuron
 python3 example/01_single_neuron.py
@@ -34,6 +35,7 @@ python3 example/04_understanding_backward.py
 ```
 
 ### 🤖 Try Your AI Assistant
+
 ```bash
 cd src
 
@@ -51,6 +53,7 @@ python3 main.py --mode train --data path/to/your/text.txt
 ```
 
 ### ⚡ For Maximum Performance (Mac M1/M2)
+
 ```bash
 # Install optimized dependencies
 ./setup_optimized.sh
@@ -62,7 +65,7 @@ python3 src/main.py --mode demo
 ## 📖 Learning Path
 
 1. **Single Neuron** → Understand basic building blocks
-2. **Multi-Layer Networks** → Learn pattern recognition  
+2. **Multi-Layer Networks** → Learn pattern recognition
 3. **Text Generation** → See language emerge
 4. **AI Assistant** → Build a complete system
 5. **Advanced Concepts** → Attention, transformers, and beyond
@@ -87,7 +90,7 @@ python3 src/main.py --mode demo
 ## 🎓 Perfect For
 
 - Software engineers wanting to understand AI deeply
-- Students learning machine learning fundamentals  
+- Students learning machine learning fundamentals
 - Anyone curious about how ChatGPT actually works
 - Developers building custom AI applications
 
@@ -110,6 +113,7 @@ python3 src/main.py --mode chat --no-train
 ```
 
 **Available Options:**
+
 - `--mode`: Choose demo, chat, train, or benchmark mode
 - `--data`: Path to custom training text file
 - `--epochs`: Number of training epochs (default: 50)
@@ -121,23 +125,27 @@ python3 src/main.py --mode chat --no-train
 ## 📊 Development Roadmap
 
 ### ✅ Phase 1: Foundations (Completed)
+
 - [x] Scalar-valued neural networks (micrograd)
 - [x] Basic optimization algorithms
 - [x] Multi-layer perceptrons
 - [x] Text processing and generation
 
 ### ✅ Phase 2: Character-Level Models (Completed)
+
 - [x] Character-level language models
 - [x] Multi-layer networks for text
 - [x] Working AI assistant prototype
 
 ### 🚧 Phase 3: Optimization (In Progress)
+
 - [x] TensorFlow integration for speed
 - [x] GPU acceleration (Mac M1/M2)
 - [x] Performance benchmarking
 - [ ] Advanced training techniques
 
 ### 🎯 Phase 4: Advanced Features (Planned)
+
 - [ ] Attention mechanisms from scratch
 - [ ] Transformer architecture
 - [ ] Memory and context management
@@ -171,6 +179,7 @@ MindMirror/
 ## 🚀 Getting Started
 
 1. **Clone and setup**:
+
    ```bash
    git clone <repo>
    cd MindMirror
@@ -178,11 +187,13 @@ MindMirror/
    ```
 
 2. **For maximum performance** (Mac M1/M2):
+
    ```bash
    ./setup_optimized.sh
    ```
 
 3. **Start learning**:
+
    ```bash
    python3 example/01_single_neuron.py
    ```
@@ -195,6 +206,7 @@ MindMirror/
 ## 🎯 Next Steps
 
 After completing this foundation, you'll be ready to:
+
 - Implement attention mechanisms from scratch
 - Build transformer architectures
 - Create domain-specific AI applications

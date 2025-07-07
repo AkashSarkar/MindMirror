@@ -7,6 +7,7 @@ Fallback to educational implementation if TensorFlow is not available.
 
 import sys
 import os
+
 sys.path.insert(0, os.path.dirname(__file__))
 
 import argparse
@@ -15,10 +16,11 @@ import time
 # Import the optimized AI (which has built-in fallback)
 from core.ai import MindMirrorAI
 
+
 def load_training_data(file_path: str = None) -> str:
     """Load training data from file or use default"""
     if file_path and os.path.exists(file_path):
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
         print(f"📁 Loaded {len(content)} characters from {file_path}")
         return content
@@ -65,27 +67,66 @@ The future of AI lies in combining human understanding with machine learning cap
 def train_ai(ai: MindMirrorAI, data_file: str = None, epochs: int = 100):
     """Train the AI on text data with progress tracking"""
     print("🤖 Starting AI Training...")
-    print(f"🔧 Implementation: {'TensorFlow (optimized)' if hasattr(ai, 'using_tensorflow') and ai.using_tensorflow else 'Educational (from scratch)'}")
-    
+    print(
+        f"🔧 Implementation: {'TensorFlow (optimized)' if hasattr(ai, 'using_tensorflow') and ai.using_tensorflow else 'Educational (from scratch)'}"
+    )
+
     # Load training data
     training_text = load_training_data(data_file)
     print(f"📚 Loaded {len(training_text)} characters of training data")
-    
+
     # Prepare training data
     print("⚙️  Preparing training data...")
     ai.learn_from_text(training_text)
-    
-    # Train the AI with timing
+
+    # Train the AI with timing and progress
     print(f"🎯 Training for {epochs} epochs...")
     start_time = time.time()
-    
-    ai.train(epochs=epochs, learning_rate=0.01)
-    
+
+    # Add progress tracking with visual indicator
+    progress_interval = 1  # Show progress every epoch for better feedback
+
+    print("   Starting training...")
+    try:
+        for epoch in range(epochs):
+            epoch_start = time.time()
+            loss = ai.train_epoch(
+                learning_rate=0.1
+            )  # Increased learning rate for faster convergence
+            epoch_time = time.time() - epoch_start
+
+            # Calculate progress
+            progress = ((epoch + 1) / epochs) * 100
+            elapsed = time.time() - start_time
+            eta = (
+                (elapsed / (epoch + 1)) * (epochs - epoch - 1)
+                if epoch < epochs - 1
+                else 0
+            )
+
+            # Create progress bar
+            bar_length = 20
+            filled_length = int(bar_length * (epoch + 1) // epochs)
+            bar = "█" * filled_length + "░" * (bar_length - filled_length)
+
+            # Show progress with bar
+            print(
+                f"\r   📈 [{bar}] {progress:.0f}% | Epoch {epoch+1}/{epochs} | Loss: {loss:.4f} | {epoch_time:.2f}s/epoch | ETA: {eta:.0f}s",
+                end="",
+                flush=True,
+            )
+
+        print()  # New line after progress bar
+    except AttributeError:
+        # Fallback to old method if train_epoch doesn't exist
+        print("   Using legacy training method...")
+        ai.train(epochs=epochs, learning_rate=0.01)
+
     end_time = time.time()
     training_time = end_time - start_time
     print(f"✅ Training completed in {training_time:.2f} seconds!")
     print(f"⚡ Average time per epoch: {training_time/epochs:.3f} seconds")
-    
+
     return ai
 
 
@@ -94,18 +135,18 @@ def interactive_mode(ai: MindMirrorAI):
     print("\n🎯 MindMirror AI - Interactive Mode")
     print("Type 'quit' to exit, 'help' for commands")
     print("=" * 50)
-    
+
     # Set initial temperature for generation
     temperature = 0.7
-    
+
     while True:
         try:
             user_input = input("\n👤 You: ").strip()
-            
-            if user_input.lower() in ['quit', 'exit', 'q']:
+
+            if user_input.lower() in ["quit", "exit", "q"]:
                 print("👋 Goodbye!")
                 break
-            elif user_input.lower() == 'help':
+            elif user_input.lower() == "help":
                 print("\n📋 Available Commands:")
                 print("  help - Show this help")
                 print("  generate <length> - Generate text (e.g., 'generate 100')")
@@ -114,7 +155,7 @@ def interactive_mode(ai: MindMirrorAI):
                 print("  stats - Show generation statistics")
                 print("  quit - Exit")
                 continue
-            elif user_input.lower().startswith('generate'):
+            elif user_input.lower().startswith("generate"):
                 parts = user_input.split()
                 length = int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else 100
                 print(f"🎲 Generating {length} characters...")
@@ -123,7 +164,7 @@ def interactive_mode(ai: MindMirrorAI):
                 gen_time = time.time() - start_time
                 print(f"🤖 Generated ({gen_time:.2f}s): {response}")
                 continue
-            elif user_input.lower().startswith('temp'):
+            elif user_input.lower().startswith("temp"):
                 parts = user_input.split()
                 if len(parts) > 1:
                     try:
@@ -138,33 +179,36 @@ def interactive_mode(ai: MindMirrorAI):
                 else:
                     print(f"🌡️  Current temperature: {temperature}")
                 continue
-            elif user_input.lower() == 'info':
+            elif user_input.lower() == "info":
                 print(f"\n🤖 AI Information:")
-                print(f"   Implementation: {'TensorFlow (optimized)' if hasattr(ai, 'using_tensorflow') and ai.using_tensorflow else 'Educational (from scratch)'}")
+                print(
+                    f"   Implementation: {'TensorFlow (optimized)' if hasattr(ai, 'using_tensorflow') and ai.using_tensorflow else 'Educational (from scratch)'}"
+                )
                 print(f"   Context Length: {getattr(ai, 'context_length', 'Unknown')}")
                 print(f"   Hidden Size: {getattr(ai, 'hidden_size', 'Unknown')}")
                 print(f"   Vocabulary Size: {getattr(ai, 'vocab_size', 'Unknown')}")
                 print(f"   Temperature: {temperature}")
                 continue
-            elif user_input.lower() == 'stats':
+            elif user_input.lower() == "stats":
                 print("📊 Generation statistics not implemented yet")
                 continue
             elif not user_input:
                 continue
-            
+
             # Generate response to user input
             print("🤔 Thinking...")
             start_time = time.time()
             response = ai.chat_response(user_input)
             response_time = time.time() - start_time
             print(f"🤖 MindMirror ({response_time:.2f}s): {response}")
-            
+
         except KeyboardInterrupt:
             print("\n👋 Goodbye!")
             break
         except Exception as e:
             print(f"❌ Error: {e}")
             import traceback
+
             traceback.print_exc()
 
 
@@ -172,22 +216,24 @@ def demo_mode(ai: MindMirrorAI):
     """Run demonstration mode with enhanced examples"""
     print("\n🎭 MindMirror AI - Demo Mode")
     print("=" * 50)
-    
+
     # Show AI information
-    print(f"🤖 AI Implementation: {'TensorFlow (optimized)' if hasattr(ai, 'using_tensorflow') and ai.using_tensorflow else 'Educational (from scratch)'}")
-    
+    print(
+        f"🤖 AI Implementation: {'TensorFlow (optimized)' if hasattr(ai, 'using_tensorflow') and ai.using_tensorflow else 'Educational (from scratch)'}"
+    )
+
     # Show some generated text
     print("\n📝 Text Generation Examples:")
     print("   (Each example shows different generation behaviors)")
-    
+
     prompts = [
         ("Hello", "Simple greeting"),
         ("I am", "Self-description"),
         ("Neural networks", "Technical explanation"),
         ("Learning is", "Educational concept"),
-        ("", "Free generation")
+        ("", "Free generation"),
     ]
-    
+
     for prompt, description in prompts:
         print(f"\n🎲 {description} - Prompt: '{prompt}'")
         try:
@@ -197,7 +243,7 @@ def demo_mode(ai: MindMirrorAI):
             print(f"   → {generated} ({gen_time:.2f}s)")
         except Exception as e:
             print(f"   ❌ Error: {e}")
-    
+
     # Show learning capabilities
     print(f"\n🧠 Learning Capabilities:")
     print(f"   Context Length: {getattr(ai, 'context_length', 'Unknown')}")
@@ -209,11 +255,11 @@ def benchmark_mode(ai: MindMirrorAI):
     """Run performance benchmarks"""
     print("\n⚡ Performance Benchmark Mode")
     print("=" * 50)
-    
+
     # Test generation speed
     print("🚀 Testing generation speed...")
     test_lengths = [50, 100, 200]
-    
+
     for length in test_lengths:
         print(f"\n📏 Generating {length} characters:")
         times = []
@@ -221,44 +267,72 @@ def benchmark_mode(ai: MindMirrorAI):
             start_time = time.time()
             ai.generate(max_length=length, temperature=0.7)
             times.append(time.time() - start_time)
-        
+
         avg_time = sum(times) / len(times)
         chars_per_sec = length / avg_time
         print(f"   Average time: {avg_time:.3f}s ({chars_per_sec:.1f} chars/sec)")
-    
-    print(f"\n🎯 Implementation: {'TensorFlow (GPU-accelerated)' if hasattr(ai, 'using_tensorflow') and ai.using_tensorflow else 'Educational (CPU-only)'}")
+
+    print(
+        f"\n🎯 Implementation: {'TensorFlow (GPU-accelerated)' if hasattr(ai, 'using_tensorflow') and ai.using_tensorflow else 'Educational (CPU-only)'}"
+    )
 
 
 def main():
     """Main application entry point with enhanced features"""
-    parser = argparse.ArgumentParser(description="MindMirror AI - Personal AI Assistant")
-    parser.add_argument("--mode", choices=["train", "chat", "demo", "benchmark"], default="demo",
-                        help="Run mode: train, chat, demo, or benchmark")
+    parser = argparse.ArgumentParser(
+        description="MindMirror AI - Personal AI Assistant"
+    )
+    parser.add_argument(
+        "--mode",
+        choices=["train", "chat", "demo", "benchmark"],
+        default="demo",
+        help="Run mode: train, chat, demo, or benchmark",
+    )
     parser.add_argument("--data", type=str, help="Training data file path")
-    parser.add_argument("--epochs", type=int, default=50, help="Training epochs (default: 50)")
-    parser.add_argument("--context", type=int, default=8, help="Context length (default: 8)")
-    parser.add_argument("--hidden", type=int, default=64, help="Hidden layer size (default: 64)")
-    parser.add_argument("--learning-rate", type=float, default=0.01, help="Learning rate (default: 0.01)")
-    parser.add_argument("--no-train", action="store_true", help="Skip training (use pre-trained weights)")
-    
+    parser.add_argument(
+        "--epochs", type=int, default=3, help="Training epochs (default: 3)"
+    )
+    parser.add_argument(
+        "--context", type=int, default=8, help="Context length (default: 8)"
+    )
+    parser.add_argument(
+        "--hidden", type=int, default=64, help="Hidden layer size (default: 64)"
+    )
+    parser.add_argument(
+        "--learning-rate",
+        type=float,
+        default=0.01,
+        help="Learning rate (default: 0.01)",
+    )
+    parser.add_argument(
+        "--no-train",
+        action="store_true",
+        help="Skip training (use pre-trained weights)",
+    )
+
     args = parser.parse_args()
-    
+
     print("🌟 Welcome to MindMirror AI!")
     print("Your personal AI assistant built from scratch")
     print("=" * 50)
-    
+
     # Show system information
     try:
         import tensorflow as tf
-        gpus = tf.config.experimental.list_physical_devices('GPU')
-        print(f"🖥️  System: {len(gpus)} GPU(s) detected" if gpus else "🖥️  System: CPU-only mode")
+
+        gpus = tf.config.experimental.list_physical_devices("GPU")
+        print(
+            f"🖥️  System: {len(gpus)} GPU(s) detected"
+            if gpus
+            else "🖥️  System: CPU-only mode"
+        )
     except:
         print("🖥️  System: CPU-only mode (TensorFlow not available)")
-    
+
     # Initialize AI with specified parameters
     print(f"⚙️  Initializing AI (context: {args.context}, hidden: {args.hidden})...")
     ai = MindMirrorAI(context_length=args.context, hidden_size=args.hidden)
-    
+
     if args.mode == "train":
         train_ai(ai, args.data, args.epochs)
     elif args.mode == "chat":
@@ -269,15 +343,21 @@ def main():
         if not args.no_train:
             train_ai(ai, args.data, args.epochs)
         demo_mode(ai)
-        
+
         # Ask if user wants to continue
         print("\n" + "=" * 50)
-        response = input("🤔 What would you like to do next?\n   (c)hat, (b)enchmark, or (q)uit: ").strip().lower()
-        if response in ['c', 'chat']:
+        response = (
+            input(
+                "🤔 What would you like to do next?\n   (c)hat, (b)enchmark, or (q)uit: "
+            )
+            .strip()
+            .lower()
+        )
+        if response in ["c", "chat"]:
             interactive_mode(ai)
-        elif response in ['b', 'bench', 'benchmark']:
+        elif response in ["b", "bench", "benchmark"]:
             benchmark_mode(ai)
-        elif response in ['q', 'quit']:
+        elif response in ["q", "quit"]:
             print("👋 Goodbye!")
         else:
             print("👋 Goodbye!")
@@ -295,4 +375,5 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n❌ Unexpected error: {e}")
         import traceback
+
         traceback.print_exc()
