@@ -1,0 +1,17 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Train Neural Bigram Model",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"-c",
+				"from models.neural_bigram import NeuralBigramModel; from training.utils import create_sample_dataset; print('Training Neural Bigram Model...'); model = NeuralBigramModel(embedding_dim=8, hidden_dim=16); texts = create_sample_dataset(); model.train(texts, epochs=50, lr=0.1); print('Training complete! Generating samples:'); for i in range(3): print(f'Sample {i+1}: {model.generate(max_length=50)}')"
+			],
+			"group": "build",
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}
